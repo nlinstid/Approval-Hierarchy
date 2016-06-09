@@ -1,0 +1,34 @@
+DEF appnum = '186386509';
+DEF Scoredate1 = 20160201;
+DEF Scoredate2 = 20160331;
+DEF Delqdate1 = 20150331;
+DEF Delqdate2 = 20160331;
+
+
+select day_skey
+, Behavior_score
+, CB_score  
+from ops$cdw.ent_chd_score_hist
+where appnum_skey = &appnum
+and day_skey between &Scoredate1 and &Scoredate2
+order by day_skey desc;
+
+select appnum_skey, day_skey, delq_mo_cont_ct, delq_days_ct 
+from ops$cdw.ent_chd_delq_hist
+where appnum_skey = &appnum
+and day_skey between &Delqdate1 and &Delqdate2
+order by day_skey desc;
+
+select appnum_skey, date_post, payments_amt  
+from OPS$CDW.fact_transactions
+where appnum_skey = &appnum
+and date_post between &Delqdate1 and &Delqdate2
+order by date_post desc;
+
+select acct_open_dt 
+from ops$cdw.ent_chd_acctmain_current
+where appnum_skey = &appnum;
+
+select cur_nfr_level, prev_nfr_level 
+from ops$cdw.ent_nfr_acct
+where appnum_skey = &appnum;
